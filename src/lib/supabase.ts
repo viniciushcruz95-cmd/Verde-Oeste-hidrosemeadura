@@ -1,9 +1,34 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Verificar se as variáveis estão configuradas
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Função para validar URL do Supabase
+const isValidSupabaseUrl = (url: string | undefined): boolean => {
+  if (!url) return false
+  try {
+    const urlObj = new URL(url)
+    return urlObj.protocol === 'https:' && urlObj.hostname.includes('supabase')
+  } catch {
+    return false
+  }
+}
+
+// Verificar se as variáveis estão configuradas corretamente
+const isSupabaseConfigured = 
+  supabaseUrl && 
+  supabaseAnonKey &&
+  isValidSupabaseUrl(supabaseUrl) &&
+  supabaseAnonKey.length > 20 // Chave deve ter tamanho mínimo
+
+// Criar cliente apenas se configurado corretamente
+export const supabase = isSupabaseConfigured 
+  ? createClient(supabaseUrl!, supabaseAnonKey!)
+  : null
+
+// Flag para verificar se o Supabase está configurado
+export const isConfigured = !!isSupabaseConfigured
 
 // Tipos para o banco de dados
 export interface Database {
