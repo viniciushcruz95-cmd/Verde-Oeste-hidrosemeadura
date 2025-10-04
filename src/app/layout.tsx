@@ -17,20 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sistema de Gestão - Verde Oeste",
-  description: "Sistema de gestão empresarial para hidrosemeadura e revegetação",
-  manifest: "/manifest.json",
-  themeColor: "#10b981",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Verde Oeste"
-  },
-  icons: {
-    icon: "/icon.svg",
-    apple: "/icon-192.png"
-  }
+  title: "Criado com a Lasy",
+  description: "Projeto criado com Lasy AI",
 };
 
 export default function RootLayout({
@@ -42,12 +30,6 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head>
         <Script src="/lasy-bridge.js" strategy="beforeInteractive" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Verde Oeste" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#10b981" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
