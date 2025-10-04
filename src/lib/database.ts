@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase, isConfigured } from './supabase'
 
 // Tipos para as entidades
 export interface Cliente {
@@ -58,20 +58,40 @@ export interface Orcamento {
   updated_at?: string
 }
 
+// Função helper para verificar se o Supabase está configurado
+const checkSupabaseConfig = () => {
+  if (!isConfigured || !supabase) {
+    console.warn('Supabase não está configurado. Funcionando em modo offline.')
+    return null
+  }
+  return supabase
+}
+
 // Funções para Clientes
 export const clienteService = {
   async getAll(): Promise<Cliente[]> {
-    const { data, error } = await supabase
-      .from('clientes')
-      .select('*')
-      .order('nome')
+    const client = checkSupabaseConfig()
+    if (!client) return []
     
-    if (error) throw error
-    return data || []
+    try {
+      const { data, error } = await client
+        .from('clientes')
+        .select('*')
+        .order('nome')
+      
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('Erro ao buscar clientes:', error)
+      return []
+    }
   },
 
   async create(cliente: Omit<Cliente, 'id' | 'created_at' | 'updated_at'>): Promise<Cliente> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('clientes')
       .insert(cliente)
       .select()
@@ -82,7 +102,10 @@ export const clienteService = {
   },
 
   async update(id: string, cliente: Partial<Cliente>): Promise<Cliente> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('clientes')
       .update(cliente)
       .eq('id', id)
@@ -94,7 +117,10 @@ export const clienteService = {
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { error } = await client
       .from('clientes')
       .delete()
       .eq('id', id)
@@ -106,17 +132,28 @@ export const clienteService = {
 // Funções para Serviços
 export const servicoService = {
   async getAll(): Promise<Servico[]> {
-    const { data, error } = await supabase
-      .from('servicos')
-      .select('*')
-      .order('nome')
+    const client = checkSupabaseConfig()
+    if (!client) return []
     
-    if (error) throw error
-    return data || []
+    try {
+      const { data, error } = await client
+        .from('servicos')
+        .select('*')
+        .order('nome')
+      
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('Erro ao buscar serviços:', error)
+      return []
+    }
   },
 
   async create(servico: Omit<Servico, 'id' | 'created_at' | 'updated_at'>): Promise<Servico> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('servicos')
       .insert(servico)
       .select()
@@ -127,7 +164,10 @@ export const servicoService = {
   },
 
   async update(id: string, servico: Partial<Servico>): Promise<Servico> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('servicos')
       .update(servico)
       .eq('id', id)
@@ -139,7 +179,10 @@ export const servicoService = {
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { error } = await client
       .from('servicos')
       .delete()
       .eq('id', id)
@@ -151,17 +194,28 @@ export const servicoService = {
 // Funções para Viáticos
 export const viaticoService = {
   async getAll(): Promise<Viatico[]> {
-    const { data, error } = await supabase
-      .from('viaticos')
-      .select('*')
-      .order('data', { ascending: false })
+    const client = checkSupabaseConfig()
+    if (!client) return []
     
-    if (error) throw error
-    return data || []
+    try {
+      const { data, error } = await client
+        .from('viaticos')
+        .select('*')
+        .order('data', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('Erro ao buscar viáticos:', error)
+      return []
+    }
   },
 
   async create(viatico: Omit<Viatico, 'id' | 'created_at' | 'updated_at'>): Promise<Viatico> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('viaticos')
       .insert(viatico)
       .select()
@@ -172,7 +226,10 @@ export const viaticoService = {
   },
 
   async update(id: string, viatico: Partial<Viatico>): Promise<Viatico> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('viaticos')
       .update(viatico)
       .eq('id', id)
@@ -184,7 +241,10 @@ export const viaticoService = {
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { error } = await client
       .from('viaticos')
       .delete()
       .eq('id', id)
@@ -196,17 +256,28 @@ export const viaticoService = {
 // Funções para Orçamentos
 export const orcamentoService = {
   async getAll(): Promise<Orcamento[]> {
-    const { data, error } = await supabase
-      .from('orcamentos')
-      .select('*')
-      .order('data', { ascending: false })
+    const client = checkSupabaseConfig()
+    if (!client) return []
     
-    if (error) throw error
-    return data || []
+    try {
+      const { data, error } = await client
+        .from('orcamentos')
+        .select('*')
+        .order('data', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('Erro ao buscar orçamentos:', error)
+      return []
+    }
   },
 
   async create(orcamento: Omit<Orcamento, 'id' | 'created_at' | 'updated_at'>): Promise<Orcamento> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('orcamentos')
       .insert(orcamento)
       .select()
@@ -217,7 +288,10 @@ export const orcamentoService = {
   },
 
   async update(id: string, orcamento: Partial<Orcamento>): Promise<Orcamento> {
-    const { data, error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { data, error } = await client
       .from('orcamentos')
       .update(orcamento)
       .eq('id', id)
@@ -229,7 +303,10 @@ export const orcamentoService = {
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase
+    const client = checkSupabaseConfig()
+    if (!client) throw new Error('Banco de dados não configurado')
+    
+    const { error } = await client
       .from('orcamentos')
       .delete()
       .eq('id', id)
